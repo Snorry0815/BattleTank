@@ -27,6 +27,8 @@ public:
 	void Fire();
 
 protected:
+	virtual void BeginPlay() override;
+
 	UPROPERTY(VisibleAnywhere)
 	class UAimComponent* AimComp = nullptr;
 
@@ -34,8 +36,18 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	
-	UPROPERTY(EditAnywhere, Category = Firing)
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
 	float LaunchSpeed = 100000;
+
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	TSubclassOf<class AProjectile> ProjectileClass;
+
+	class UTankBarrel* Barrel;
+	FName BarrelSocketName;
+
+	UPROPERTY(EditDefaultsOnly)
+	float ReloadTimeInSeconds = 3.f;
+
+	float LastFireTime;
 };

@@ -39,6 +39,9 @@ void UAimComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 
 void UAimComponent::AimAt(const FVector& AimLocation, float LaunchSpeed)
 {
+	if (!Barrel)
+		return;
+
 	const auto StartLocation = Barrel->GetSocketLocation(BarrelSocketName);
 	FVector TossVelocity;
 	bool bHaveAimSolution = UGameplayStatics::SuggestProjectileVelocity(this, TossVelocity, StartLocation, AimLocation, LaunchSpeed, false, 0, 0, ESuggestProjVelocityTraceOption::DoNotTrace);
@@ -65,10 +68,8 @@ void UAimComponent::SetTowerReference(UTankTower* TowerToSet)
 void UAimComponent::MoveBarrelTowards(const FVector& AimDirection)
 {
 	if (!Barrel)
-	{
-		UE_LOG(LogActor, Error, TEXT("Barrel not Setup for aimcomponent in %s!"), *GetOwner()->GetName());
 		return;
-	}
+	
 
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();

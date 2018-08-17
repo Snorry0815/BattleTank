@@ -3,36 +3,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 
-
-void ATankAIController::BeginPlay()
-{
-	Super::BeginPlay();
-	auto* ControlledTank = GetControlledTank();
-	if (ControlledTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ATankAIController possesing : %s"), *ControlledTank->GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ATankAIController not possesing a tank!"));
-	}
-
-	auto* PlayerTank = GetPlayerTank();
-	if (PlayerTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerTank : %s"), *PlayerTank->GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No player tank!"));
-	}
-}
-
 void ATankAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	auto* AiTank = GetControlledTank();
+	auto* AiTank = Cast<ATank>(GetPawn());
 	if (AiTank == nullptr)
 		return;
 	
@@ -41,11 +16,7 @@ void ATankAIController::Tick(float DeltaSeconds)
 		return;
 
 	AiTank->AimAt(PlayerTank->GetActorLocation());
-}
-
-ATank* ATankAIController::GetControlledTank() const
-{
-	return Cast<ATank>(GetPawn());
+	AiTank->Fire();
 }
 
 ATank* ATankAIController::GetPlayerTank() const

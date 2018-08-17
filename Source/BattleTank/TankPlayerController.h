@@ -24,9 +24,9 @@ protected:
 
 	bool GetAimLocation(FVector& OutHitLocation) const;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FVector2D RelativeCorsshairLocation = FVector2D(0.5f, 0.33f);
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float LineTraceRange = 100000.f;
 };

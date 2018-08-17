@@ -18,9 +18,9 @@ public:
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+	
 	void AimAt(const FVector& AimLocation, float LaunchSpeed);
-
+	
 	void SetBarrelReference(class UTankBarrel* BarrelToSet, const FName& BarrelSoccketNameToSet);
 	void SetTowerReference(class UTankTower* TowerToSet);
 

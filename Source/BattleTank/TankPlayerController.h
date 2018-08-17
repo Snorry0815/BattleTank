@@ -10,13 +10,13 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 public:
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
-
 	UFUNCTION(Blueprintcallable)
 	class ATank* GetControlledTank() const;
 
 protected:
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+
 	void AimTowardsCrosshair();
 
 	bool GetTargetDirectionData(FVector& WorldLocation, FVector& WorldDirection) const;

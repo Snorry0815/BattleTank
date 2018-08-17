@@ -16,17 +16,26 @@ public:
 	ATank();
 
 	void AimAt(const FVector& AimLocation);
+
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void SetBarrelReference(class UTankBarrel* BarrelToSet, const FName& BarrelSoccketNameToSet);
+
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void SetTowerReference(class UTankTower* TowerToSet);
+
+	UFUNCTION(BlueprintCallable, Category = Controls)
+	void Fire();
+
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	UPROPERTY(VisibleAnywhere)
+	class UAimComponent* AimComp = nullptr;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	
-	
+	UPROPERTY(EditAnywhere, Category = Firing)
+	float LaunchSpeed = 100000;
 };

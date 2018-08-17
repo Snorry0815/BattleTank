@@ -1,33 +1,32 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Tank.h"
-#include "DrawDebugHelpers.h"
+#include "AimComponent.h"
+#include "Components/InputComponent.h"
 
-// Sets default values
 ATank::ATank()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
+	AimComp = CreateDefaultSubobject<UAimComponent>(FName("AimComp"));
 }
 
 void ATank::AimAt(const FVector& AimLocation)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s aims at %s"), *GetName(), *AimLocation.ToString());
+	AimComp->AimAt(AimLocation, LaunchSpeed);
 }
 
-// Called when the game starts or when spawned
-void ATank::BeginPlay()
+void ATank::SetBarrelReference(UTankBarrel* BarrelToSet, const FName& BarrelSoccketNameToSet)
 {
-	Super::BeginPlay();
-	
+	AimComp->SetBarrelReference(BarrelToSet, BarrelSoccketNameToSet);
 }
 
-// Called every frame
-void ATank::Tick(float DeltaTime)
+void ATank::SetTowerReference(UTankTower* TowerToSet)
 {
-	Super::Tick(DeltaTime);
+	AimComp->SetTowerReference(TowerToSet);
+}
 
+void ATank::Fire()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Fire"));
 }
 
 // Called to bind functionality to input
@@ -35,5 +34,6 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ATank::Fire);
 }
 

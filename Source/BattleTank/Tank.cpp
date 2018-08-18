@@ -11,7 +11,6 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 
 	AimComp = CreateDefaultSubobject<UAimComponent>(FName("AimComp"));
-	TankMovementComponent = CreateDefaultSubobject<UTankMovementComponent>(FName("TankMovementComponent"));
 }
 
 void ATank::AimAt(const FVector& AimLocation)

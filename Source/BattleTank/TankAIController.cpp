@@ -18,11 +18,12 @@ void ATankAIController::Tick(float DeltaSeconds)
 	MoveToActor(PlayerActor, AcceptanceRadiusForMovementToActor);
 
 	auto* AimComponent = AiTank->FindComponentByClass<UAimComponent>();
-	if (ensure(AimComponent))
-	{
-		AimComponent->AimAt(PlayerActor->GetActorLocation());
+	if (!ensure(AimComponent))
+		return;
+
+	AimComponent->AimAt(PlayerActor->GetActorLocation());
+	if (AimComponent->IsLockedOn())
 		AimComponent->Fire();	
-	}
 }
 
 AActor* ATankAIController::GetPlayerActor() const

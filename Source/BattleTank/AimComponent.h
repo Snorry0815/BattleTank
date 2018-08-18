@@ -36,6 +36,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Firing")
 	void Fire();
 
+	bool IsLockedOn() const
+	{
+		return FiringinState == EFiringState::Locked;
+	}
+
 protected:
 	void MoveBarrelAndTowerTowards(const FVector& AimDirection);
 

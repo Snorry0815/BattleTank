@@ -1,5 +1,5 @@
 #include "TankAIController.h"
-#include "Tank.h"
+#include "AimComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 
@@ -7,20 +7,25 @@ void ATankAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	auto* AiTank = Cast<ATank>(GetPawn());
+	auto* AiTank = GetPawn();
 	if (!ensure(AiTank))
 		return;
-	
-	auto* PlayerTank = GetPlayerTank();
-	if (!ensure(PlayerTank))
+
+	auto* PlayerActor = GetPlayerActor();
+	if (!ensure(PlayerActor))
 		return;
 
-	MoveToActor(PlayerTank, AcceptanceRadiusForMovementToActor);
-	AiTank->AimAt(PlayerTank->GetActorLocation());
-	AiTank->Fire();
+	MoveToActor(PlayerActor, AcceptanceRadiusForMovementToActor);
+
+	auto* AimComponent = AiTank->FindComponentByClass<UAimComponent>();
+	if (ensure(AimComponent))
+	{
+		AimComponent->AimAt(PlayerActor->GetActorLocation());
+		AimComponent->Fire();	
+	}
 }
 
-ATank* ATankAIController::GetPlayerTank() const
+AActor* ATankAIController::GetPlayerActor() const
 {
 	auto* World = GetWorld();
 	if (!ensure(World))
@@ -30,5 +35,5 @@ ATank* ATankAIController::GetPlayerTank() const
 	if (!ensure(PlayerController))
 		return nullptr;
 	
-	return Cast<ATank>(PlayerController->GetPawn());
+	return PlayerController->GetPawn();
 }

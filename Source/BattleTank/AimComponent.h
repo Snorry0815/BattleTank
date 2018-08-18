@@ -24,20 +24,19 @@ public:
 	// Sets default values for this component's properties
 	UAimComponent();
 
+	virtual void BeginPlay() override;
+
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void Initialise(class UTankTower* TowerToSet, class UTankBarrel* BarrelToSet, const FName& BarrelSoccketNameToSet);
 
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
-	void AimAt(const FVector& AimLocation, float LaunchSpeed);
+	void AimAt(const FVector& AimLocation);
+
+	UFUNCTION(BlueprintCallable, Category = "Firing")
+	void Fire();
 
 protected:
 	void MoveBarrelTowards(const FVector& AimDirection);
 	void MoveTowerTowards(const FVector& AimDirection);
-
-	// Called when the game starts
-	virtual void BeginPlay() override;
 
 	class UTankBarrel* Barrel;
 	FName BarrelSocketName;
@@ -46,4 +45,15 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 	EFiringState FringinState = EFiringState::Reloading;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+	float LaunchSpeed = 100000; 
+
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+	TSubclassOf<class AProjectile> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	float ReloadTimeInSeconds = 3.f;
+
+	float LastFireTime;
 };

@@ -40,7 +40,9 @@ void ATankPlayerController::AimTowardsCrosshair()
 	if (!GetAimLocation(HitLocation))
 		return;
 
-	PawnTank->AimAt(HitLocation);
+	auto* AimComponent = PawnTank->FindComponentByClass<UAimComponent>();
+	if (ensure(AimComponent))
+		AimComponent->AimAt(HitLocation);
 }
 
 bool ATankPlayerController::GetAimLocation(FVector& OutHitLocation) const

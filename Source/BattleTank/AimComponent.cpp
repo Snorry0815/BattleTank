@@ -1,20 +1,21 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "AimComponent.h"
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TankBarrel.h"
 #include "TankTower.h"
+#include "Engine/World.h"
+#include "Projectile.h"
 
-// Sets default values for this component's properties
 UAimComponent::UAimComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
+}
 
-	// ...
+void UAimComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	LastFireTime = -ReloadTimeInSeconds;
 }
 
 void UAimComponent::Initialise(UTankTower* TowerToSet, UTankBarrel* BarrelToSet, const FName& BarrelSoccketNameToSet)
@@ -24,27 +25,7 @@ void UAimComponent::Initialise(UTankTower* TowerToSet, UTankBarrel* BarrelToSet,
 	Tower = TowerToSet;
 }
 
-
-// Called when the game starts
-void UAimComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	
-}
-
-
-// Called every frame
-void UAimComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-
-
-void UAimComponent::AimAt(const FVector& AimLocation, float LaunchSpeed)
+void UAimComponent::AimAt(const FVector& AimLocation)
 {
 	if (!ensure(Barrel))
 		return;
@@ -86,4 +67,34 @@ void UAimComponent::MoveTowerTowards(const FVector& AimDirection)
 	float OpositeYaw = DeltaRotator.Yaw > 0.f ? DeltaRotator.Yaw - 360.f : 360 + DeltaRotator.Yaw;
 
 	Tower->Rotate(FMath::Abs(DeltaRotator.Yaw) < FMath::Abs(OpositeYaw) ? DeltaRotator.Yaw : OpositeYaw);
+}
+
+void UAimComponent::Fire()
+{
+	float timeSinceLastShoot = GetWorld()->GetTimeSeconds() - LastFireTime;
+	if (timeSinceLastShoot < ReloadTimeInSeconds)
+		return;
+
+	if (!ensure(ProjectileClass))
+		return;
+
+	if (!ensure(Barrel))
+		return;
+
+	LastFireTime = GetWorld()->GetTimeSeconds();
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Instigator = Cast<APawn>(GetOwner());
+	SpawnParameters.Owner = GetOwner();
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	const auto StartLocation = Barrel->GetSocketLocation(BarrelSocketName);
+	const auto StartRotation = Barrel->GetSocketRotation(BarrelSocketName);
+
+	auto* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, StartLocation, StartRotation, SpawnParameters);
+	auto* RootAsPrimitive = Cast<UPrimitiveComponent>(Projectile->GetRootComponent());
+	RootAsPrimitive->IgnoreActorWhenMoving(GetOwner(), true);
+	Barrel->IgnoreActorWhenMoving(Projectile, true);
+
+	Projectile->LaunchProjectile(LaunchSpeed);
 }

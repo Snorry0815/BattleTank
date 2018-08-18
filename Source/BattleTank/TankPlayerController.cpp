@@ -1,7 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "TankPlayerController.h"
-#include "Tank.h"
 #include "AimComponent.h"
 #include "Engine/World.h"
 
@@ -12,16 +9,11 @@ void ATankPlayerController::Tick(float DeltaSeconds)
 	AimTowardsCrosshair();
 }
 
-ATank* ATankPlayerController::GetControlledTank() const
-{
-	return Cast<ATank>(GetPawn());
-}
-
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto* PawnTank = GetControlledTank();
+	auto* PawnTank = GetPawn();
 	if (!PawnTank)
 		return;
 	
@@ -32,7 +24,7 @@ void ATankPlayerController::BeginPlay()
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	auto* PawnTank = GetControlledTank();
+	auto* PawnTank = GetPawn();
 	if (!ensure(PawnTank))
 		return;
 
@@ -76,7 +68,7 @@ bool ATankPlayerController::GetLookVectorHitDirection(const FVector& WorldLocati
 	if (!ensure(World))
 		return false;
 
-	auto* PawnTank = GetControlledTank();
+	auto* PawnTank = GetPawn();
 	if (!ensure(PawnTank))
 		return false;
 

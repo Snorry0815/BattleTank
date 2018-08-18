@@ -26,6 +26,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void Initialise(class UTankTower* TowerToSet, class UTankBarrel* BarrelToSet, const FName& BarrelSoccketNameToSet);
 
@@ -35,8 +37,7 @@ public:
 	void Fire();
 
 protected:
-	void MoveBarrelTowards(const FVector& AimDirection);
-	void MoveTowerTowards(const FVector& AimDirection);
+	void MoveBarrelAndTowerTowards(const FVector& AimDirection);
 
 	class UTankBarrel* Barrel;
 	FName BarrelSocketName;
@@ -44,7 +45,7 @@ protected:
 	class UTankTower* Tower;
 
 	UPROPERTY(BlueprintReadOnly, Category = "State")
-	EFiringState FringinState = EFiringState::Reloading;
+	EFiringState FiringinState = EFiringState::Reloading;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	float LaunchSpeed = 5000; 

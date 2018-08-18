@@ -9,13 +9,23 @@
 
 UAimComponent::UAimComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UAimComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	LastFireTime = -ReloadTimeInSeconds;
+	LastFireTime = GetWorld()->GetTimeSeconds();
+	FiringinState = EFiringState::Reloading;
+}
+
+void UAimComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+
+	if ((FiringinState == EFiringState::Reloading) && ((GetWorld()->GetTimeSeconds() - LastFireTime) >= ReloadTimeInSeconds))
+		FiringinState = EFiringState::Aiming;
 }
 
 void UAimComponent::Initialise(UTankTower* TowerToSet, UTankBarrel* BarrelToSet, const FName& BarrelSoccketNameToSet)
@@ -37,42 +47,46 @@ void UAimComponent::AimAt(const FVector& AimLocation)
 	if (bHaveAimSolution)
 	{
 		auto AimDirection = TossVelocity.GetSafeNormal();
-		MoveBarrelTowards(AimDirection);
-		MoveTowerTowards(AimDirection);
+		MoveBarrelAndTowerTowards(AimDirection);
 	}
 }
 
-void UAimComponent::MoveBarrelTowards(const FVector& AimDirection)
+void UAimComponent::MoveBarrelAndTowerTowards(const FVector& AimDirection)
 {
 	if (!ensure(Barrel))
 		return;
-	
 
-	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
-	auto AimAsRotator = AimDirection.Rotation();
-	auto DeltaRotator = AimAsRotator - BarrelRotator;
-
-	Barrel->Elevate(DeltaRotator.Pitch);
-}
-
-void UAimComponent::MoveTowerTowards(const FVector& AimDirection)
-{
 	if (!ensure(Tower))
 		return;
 
-	auto BarrelRotator = Tower->GetForwardVector().Rotation();
+	FVector BarrelForwardVector = Barrel->GetForwardVector();
+	if (AimDirection.Equals(BarrelForwardVector, 0.01f))
+	{
+		if (FiringinState == EFiringState::Aiming)
+			FiringinState = EFiringState::Locked;
+	}
+	else
+	{
+		if (FiringinState == EFiringState::Locked)
+			FiringinState = EFiringState::Aiming;
+	}
+
+	auto BarrelRotator = BarrelForwardVector.Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
-	auto DeltaRotator = AimAsRotator - BarrelRotator;
+	auto BarrelDeltaRotator = AimAsRotator - BarrelRotator;
 
-	float OpositeYaw = DeltaRotator.Yaw > 0.f ? DeltaRotator.Yaw - 360.f : 360 + DeltaRotator.Yaw;
+	Barrel->Elevate(BarrelDeltaRotator.Pitch);
 
-	Tower->Rotate(FMath::Abs(DeltaRotator.Yaw) < FMath::Abs(OpositeYaw) ? DeltaRotator.Yaw : OpositeYaw);
+	auto TowerRotator = Tower->GetForwardVector().Rotation();
+	auto DeltaTowerRotator = AimAsRotator - BarrelRotator;
+	float OpositeYaw = DeltaTowerRotator.Yaw > 0.f ? DeltaTowerRotator.Yaw - 360.f : 360 + DeltaTowerRotator.Yaw;
+
+	Tower->Rotate(FMath::Abs(DeltaTowerRotator.Yaw) < FMath::Abs(OpositeYaw) ? DeltaTowerRotator.Yaw : OpositeYaw);
 }
 
 void UAimComponent::Fire()
 {
-	float timeSinceLastShoot = GetWorld()->GetTimeSeconds() - LastFireTime;
-	if (timeSinceLastShoot < ReloadTimeInSeconds)
+	if (FiringinState == EFiringState::Reloading)
 		return;
 
 	if (!ensure(ProjectileClass))
@@ -82,6 +96,7 @@ void UAimComponent::Fire()
 		return;
 
 	LastFireTime = GetWorld()->GetTimeSeconds();
+	FiringinState = EFiringState::Reloading;
 
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.Instigator = Cast<APawn>(GetOwner());

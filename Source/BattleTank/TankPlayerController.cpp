@@ -25,7 +25,7 @@ void ATankPlayerController::BeginPlay()
 void ATankPlayerController::AimTowardsCrosshair()
 {
 	auto* PawnTank = GetPawn();
-	if (!ensure(PawnTank))
+	if (!PawnTank)
 		return;
 
 	FVector HitLocation;

@@ -4,21 +4,6 @@
 #include "Tank.h"
 #include "Engine/World.h"
 
-
-void ATankPlayerController::BeginPlay()
-{
-	Super::BeginPlay();
-	auto* ControlledTank = GetControlledTank();
-	if (ControlledTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player possesing : %s"), *ControlledTank->GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player not possesing a tank!"));
-	}
-}
-
 void ATankPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);

@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UAimComponent* AimComp = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UTankMovementComponent* TankMovementComponent = nullptr;
+
 public:	
 
 	// Called to bind functionality to input

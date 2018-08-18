@@ -2,6 +2,7 @@
 #include "AimComponent.h"
 #include "TankBarrel.h"
 #include "Projectile.h"
+#include "TankMovementComponent.h"
 #include "Components/InputComponent.h"
 #include "Engine/World.h"
 
@@ -10,6 +11,7 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 
 	AimComp = CreateDefaultSubobject<UAimComponent>(FName("AimComp"));
+	TankMovementComponent = CreateDefaultSubobject<UTankMovementComponent>(FName("TankMovementComponent"));
 }
 
 void ATank::AimAt(const FVector& AimLocation)

@@ -4,7 +4,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "TankTower.generated.h"
 
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), hidecategories = ("Collision"))
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), hidecategories = ("Events"))
 class BATTLETANK_API UTankTower : public UStaticMeshComponent
 {
 	GENERATED_BODY()

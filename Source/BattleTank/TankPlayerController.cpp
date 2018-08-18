@@ -2,6 +2,7 @@
 
 #include "TankPlayerController.h"
 #include "Tank.h"
+#include "AimComponent.h"
 #include "Engine/World.h"
 
 void ATankPlayerController::Tick(float DeltaSeconds)
@@ -16,10 +17,23 @@ ATank* ATankPlayerController::GetControlledTank() const
 	return Cast<ATank>(GetPawn());
 }
 
+void ATankPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	auto* PawnTank = GetControlledTank();
+	if (!PawnTank)
+		return;
+	
+	auto* AimComponent = PawnTank->FindComponentByClass<UAimComponent>();
+	if (ensure(AimComponent))
+		FoundAimingComponent(AimComponent);
+}
+
 void ATankPlayerController::AimTowardsCrosshair()
 {
 	auto* PawnTank = GetControlledTank();
-	if (PawnTank == nullptr)
+	if (!ensure(PawnTank))
 		return;
 
 	FVector HitLocation;
@@ -57,16 +71,12 @@ bool ATankPlayerController::GetTargetDirectionData(FVector& WorldLocation, FVect
 bool ATankPlayerController::GetLookVectorHitDirection(const FVector& WorldLocation, const FVector& RayTraceEnd, FVector& OutHitLocation) const
 {
 	auto* World = GetWorld();
-	if (World == nullptr)
-	{
+	if (!ensure(World))
 		return false;
-	}
 
 	auto* PawnTank = GetControlledTank();
-	if (PawnTank == nullptr)
-	{
+	if (!ensure(PawnTank))
 		return false;
-	}
 
 	FHitResult OutHit;
 

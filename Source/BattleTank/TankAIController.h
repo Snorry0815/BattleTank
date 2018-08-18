@@ -21,6 +21,6 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, Category = Movement)
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	float AcceptanceRadiusForMovementToActor = 3000.f;
 };

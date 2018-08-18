@@ -7,6 +7,14 @@
 #include "AimComponent.generated.h"
 
 
+UENUM()
+enum class EFiringState : uint8
+{
+	Reloading,
+	Aiming,
+	Locked
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UAimComponent : public UActorComponent
 {
@@ -16,13 +24,13 @@ public:
 	// Sets default values for this component's properties
 	UAimComponent();
 
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+	void Initialise(class UTankTower* TowerToSet, class UTankBarrel* BarrelToSet, const FName& BarrelSoccketNameToSet);
+
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	void AimAt(const FVector& AimLocation, float LaunchSpeed);
-	
-	void SetBarrelReference(class UTankBarrel* BarrelToSet, const FName& BarrelSoccketNameToSet);
-	void SetTowerReference(class UTankTower* TowerToSet);
 
 protected:
 	void MoveBarrelTowards(const FVector& AimDirection);
@@ -35,4 +43,7 @@ protected:
 	FName BarrelSocketName;
 
 	class UTankTower* Tower;
+
+	UPROPERTY(BlueprintReadOnly, Category = "State")
+	EFiringState FringinState = EFiringState::Reloading;
 };

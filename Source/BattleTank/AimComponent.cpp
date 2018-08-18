@@ -17,6 +17,13 @@ UAimComponent::UAimComponent()
 	// ...
 }
 
+void UAimComponent::Initialise(UTankTower* TowerToSet, UTankBarrel* BarrelToSet, const FName& BarrelSoccketNameToSet)
+{
+	Barrel = BarrelToSet;
+	BarrelSocketName = BarrelSoccketNameToSet;
+	Tower = TowerToSet;
+}
+
 
 // Called when the game starts
 void UAimComponent::BeginPlay()
@@ -39,7 +46,7 @@ void UAimComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 
 void UAimComponent::AimAt(const FVector& AimLocation, float LaunchSpeed)
 {
-	if (!Barrel)
+	if (!ensure(Barrel))
 		return;
 
 	const auto StartLocation = Barrel->GetSocketLocation(BarrelSocketName);
@@ -54,20 +61,9 @@ void UAimComponent::AimAt(const FVector& AimLocation, float LaunchSpeed)
 	}
 }
 
-void UAimComponent::SetBarrelReference(UTankBarrel* BarrelToSet, const FName& BarrelSoccketNameToSet)
-{
-	Barrel = BarrelToSet;
-	BarrelSocketName = BarrelSoccketNameToSet;
-}
-
-void UAimComponent::SetTowerReference(UTankTower* TowerToSet)
-{
-	Tower = TowerToSet;
-}
-
 void UAimComponent::MoveBarrelTowards(const FVector& AimDirection)
 {
-	if (!Barrel)
+	if (!ensure(Barrel))
 		return;
 	
 
@@ -80,11 +76,8 @@ void UAimComponent::MoveBarrelTowards(const FVector& AimDirection)
 
 void UAimComponent::MoveTowerTowards(const FVector& AimDirection)
 {
-	if (!Tower)
-	{
-		UE_LOG(LogActor, Error, TEXT("Tower not Setup for aimcomponent in %s!"), *GetOwner()->GetName());
+	if (!ensure(Tower))
 		return;
-	}
 
 	auto BarrelRotator = Tower->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();

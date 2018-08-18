@@ -9,26 +9,19 @@
 ATank::ATank()
 {
 	PrimaryActorTick.bCanEverTick = false;
-
-	AimComp = CreateDefaultSubobject<UAimComponent>(FName("AimComp"));
 }
 
 void ATank::AimAt(const FVector& AimLocation)
 {
-	AimComp->AimAt(AimLocation, LaunchSpeed);
+	auto* AimComp = FindComponentByClass<UAimComponent>();
+	if (ensure(AimComp))
+		AimComp->AimAt(AimLocation, LaunchSpeed);
 }
 
 void ATank::SetBarrelReference(UTankBarrel* BarrelToSet, const FName& BarrelSoccketNameToSet)
 {
 	Barrel = BarrelToSet;
 	BarrelSocketName = BarrelSoccketNameToSet;
-
-	AimComp->SetBarrelReference(BarrelToSet, BarrelSoccketNameToSet);
-}
-
-void ATank::SetTowerReference(UTankTower* TowerToSet)
-{
-	AimComp->SetTowerReference(TowerToSet);
 }
 
 void ATank::Fire()
@@ -37,10 +30,10 @@ void ATank::Fire()
 	if (timeSinceLastShoot < ReloadTimeInSeconds)
 		return;
 
-	if (!ProjectileClass)
+	if (!ensure(ProjectileClass))
 		return;
 
-	if (!Barrel)
+	if (!ensure(Barrel))
 		return;
 
 	LastFireTime = GetWorld()->GetTimeSeconds();

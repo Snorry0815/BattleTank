@@ -12,9 +12,8 @@ class BATTLETANK_API UTankTower : public UStaticMeshComponent
 public:
 	void Rotate(float RelativeSpeed);
 
-	UPROPERTY(EditDefaultsOnly, Category = Setup)
-	float MaxDegreesPerSecond = 10.f;
-
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	float MaxDegreesPerSecond = 20.f;
 
 protected:
 	virtual void BeginPlay() override;

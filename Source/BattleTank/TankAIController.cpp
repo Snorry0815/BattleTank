@@ -8,11 +8,11 @@ void ATankAIController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	auto* AiTank = Cast<ATank>(GetPawn());
-	if (AiTank == nullptr)
+	if (!ensure(AiTank))
 		return;
 	
 	auto* PlayerTank = GetPlayerTank();
-	if (PlayerTank == nullptr)
+	if (!ensure(PlayerTank))
 		return;
 
 	MoveToActor(PlayerTank, AcceptanceRadiusForMovementToActor);
@@ -23,11 +23,11 @@ void ATankAIController::Tick(float DeltaSeconds)
 ATank* ATankAIController::GetPlayerTank() const
 {
 	auto* World = GetWorld();
-	if (World == nullptr)
+	if (!ensure(World))
 		return nullptr;
 	
 	auto* PlayerController = World->GetFirstPlayerController();
-	if (PlayerController == nullptr)
+	if (!ensure(PlayerController))
 		return nullptr;
 	
 	return Cast<ATank>(PlayerController->GetPawn());

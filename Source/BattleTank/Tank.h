@@ -17,30 +17,24 @@ public:
 
 	void AimAt(const FVector& AimLocation);
 
-	UFUNCTION(BlueprintCallable, Category = Setup)
+	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetBarrelReference(class UTankBarrel* BarrelToSet, const FName& BarrelSoccketNameToSet);
 
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	void SetTowerReference(class UTankTower* TowerToSet);
-
-	UFUNCTION(BlueprintCallable, Category = Controls)
+	UFUNCTION(BlueprintCallable, Category = "Controls")
 	void Fire();
 
 protected:
 	virtual void BeginPlay() override;
-
-	UPROPERTY(VisibleAnywhere)
-	class UAimComponent* AimComp = nullptr;
 
 public:	
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
-	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	float LaunchSpeed = 100000;
 
-	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	TSubclassOf<class AProjectile> ProjectileClass;
 
 	class UTankBarrel* Barrel;

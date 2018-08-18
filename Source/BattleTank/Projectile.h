@@ -23,6 +23,12 @@ protected:
 	virtual void BeginPlay() override;
 
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	class UStaticMeshComponent* CollisionMesh = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	class UParticleSystemComponent* LaunchBlast = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Component")
 	class UProjectileMovementComponent* MovementComp = nullptr;
 };

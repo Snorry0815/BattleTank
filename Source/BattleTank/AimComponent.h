@@ -16,7 +16,7 @@ enum class EFiringState : uint8
 	OutOfAmmo
 };
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UAimComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -65,11 +65,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	TSubclassOf<class AProjectile> ProjectileClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+		int32 AmmoAmount = 3;
+
 	UPROPERTY(EditDefaultsOnly)
 	float ReloadTimeInSeconds = 3.f;
 
 	float LastFireTime;
 
-	UPROPERTY(EditDefaultsOnly)
-	int32 AmmoAmount = 3;
 };

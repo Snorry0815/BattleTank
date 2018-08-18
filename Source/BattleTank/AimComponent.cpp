@@ -86,7 +86,7 @@ void UAimComponent::MoveBarrelAndTowerTowards(const FVector& AimDirection)
 
 void UAimComponent::Fire()
 {
-	if (FiringinState == EFiringState::Reloading)
+	if ((FiringinState != EFiringState::Aiming) && (FiringinState != EFiringState::Locked))
 		return;
 
 	if (!ensure(ProjectileClass))
@@ -112,4 +112,8 @@ void UAimComponent::Fire()
 	Barrel->IgnoreActorWhenMoving(Projectile, true);
 
 	Projectile->LaunchProjectile(LaunchSpeed);
+
+	--AmmoAmount;
+	if (AmmoAmount <= 0)
+		FiringinState = EFiringState::OutOfAmmo;
 }

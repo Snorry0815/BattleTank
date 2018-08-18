@@ -12,7 +12,8 @@ enum class EFiringState : uint8
 {
 	Reloading,
 	Aiming,
-	Locked
+	Locked,
+	OutOfAmmo
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -41,6 +42,12 @@ public:
 		return FiringinState == EFiringState::Locked;
 	}
 
+	UFUNCTION(BlueprintCallable, Category = "Firing")
+	int32 GetAmmoAmount() const
+	{
+		return AmmoAmount;
+	}
+
 protected:
 	void MoveBarrelAndTowerTowards(const FVector& AimDirection);
 
@@ -62,4 +69,7 @@ protected:
 	float ReloadTimeInSeconds = 3.f;
 
 	float LastFireTime;
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 AmmoAmount = 3;
 };

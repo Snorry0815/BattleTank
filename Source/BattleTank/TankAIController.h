@@ -18,4 +18,9 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	class ATank* GetPlayerTank() const;
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = Movement)
+	float AcceptanceRadiusForMovementToActor = 3000.f;
 };

@@ -15,12 +15,13 @@ public:
 	// Sets default values for this actor's properties
 	AProjectile();
 
-	virtual void Tick(float DeltaTime) override;
-
 	void LaunchProjectile(float Speed);
 
 protected:
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
 
 	UPROPERTY(VisibleAnywhere, Category = "Component")
@@ -28,6 +29,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	class UParticleSystemComponent* LaunchBlast = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	class UParticleSystemComponent* ImpactBlast = nullptr;
 
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	class UProjectileMovementComponent* MovementComp = nullptr;

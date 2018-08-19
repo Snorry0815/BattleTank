@@ -34,5 +34,8 @@ protected:
 	class UParticleSystemComponent* ImpactBlast = nullptr;
 
 	UPROPERTY(VisibleAnywhere, Category = "Component")
+	class URadialForceComponent* ExplosionForce = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Component")
 	class UProjectileMovementComponent* MovementComp = nullptr;
 };

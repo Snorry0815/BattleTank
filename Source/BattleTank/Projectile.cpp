@@ -3,6 +3,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Engine/World.h"
+#include "PhysicsEngine/RadialForceComponent.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -21,6 +22,10 @@ AProjectile::AProjectile()
 	ImpactBlast->SetupAttachment(CollisionMesh);
 	ImpactBlast->bAutoActivate = false;
 
+	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>(FName("ExplosionForce"));
+	ExplosionForce->SetupAttachment(CollisionMesh);
+	ExplosionForce->bAutoActivate = false;
+
 	MovementComp = CreateDefaultSubobject<UProjectileMovementComponent>(FName("MovementComp"));
 	MovementComp->bAutoActivate = false;
 }
@@ -37,6 +42,7 @@ void AProjectile::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImp
 {
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
+	ExplosionForce->FireImpulse();
 }
 
 void AProjectile::LaunchProjectile(float Speed)

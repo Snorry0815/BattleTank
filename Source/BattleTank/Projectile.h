@@ -43,4 +43,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	float DestroyDelay = 3.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float DamageAmount = 3.f;
 };

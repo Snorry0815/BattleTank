@@ -16,6 +16,9 @@ void ATank::BeginPlay()
 float ATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
+	if (bIsDead)
+		return 0.f;
+
 	float LeftOverDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	float OldHealth = CurrentHealth;
@@ -23,6 +26,11 @@ float ATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, ACo
 
 	float AppliedDamage = OldHealth - CurrentHealth;
 
-	UE_LOG(LogTemp, Warning, TEXT("Health left: %f after apllyingDamage of %f "), CurrentHealth, AppliedDamage);
+	if (CurrentHealth <= 0.f)
+	{
+		bIsDead = true;
+		TankDied.Broadcast();
+	}
+
 	return AppliedDamage;
 }

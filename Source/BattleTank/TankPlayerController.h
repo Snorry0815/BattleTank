@@ -24,6 +24,11 @@ protected:
 
 	bool GetAimLocation(FVector& OutHitLocation) const;
 
+	virtual void SetPawn(APawn* InPawn) override;
+
+	UFUNCTION()
+	void TankDied();
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FVector2D RelativeCorsshairLocation = FVector2D(0.5f, 0.33f);
 

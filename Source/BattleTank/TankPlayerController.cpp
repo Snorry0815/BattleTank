@@ -1,5 +1,6 @@
 #include "TankPlayerController.h"
 #include "AimComponent.h"
+#include "Tank.h"
 #include "Engine/World.h"
 
 void ATankPlayerController::Tick(float DeltaSeconds)
@@ -50,6 +51,21 @@ bool ATankPlayerController::GetAimLocation(FVector& OutHitLocation) const
 
 	return true;
 }
+
+void ATankPlayerController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+
+	auto* pawnAsTank = Cast<ATank>(InPawn);
+	if (pawnAsTank)
+		pawnAsTank->TankDied.AddDynamic(this, &ATankPlayerController::TankDied);
+}
+
+void ATankPlayerController::TankDied()
+{
+	StartSpectatingOnly();
+}
+
 
 bool ATankPlayerController::GetTargetDirectionData(FVector& WorldLocation, FVector& WorldDirection) const
 {

@@ -2,6 +2,7 @@
 #include "AimComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "Tank.h"
 
 void ATankAIController::Tick(float DeltaSeconds)
 {
@@ -37,4 +38,20 @@ AActor* ATankAIController::GetPlayerActor() const
 		return nullptr;
 	
 	return PlayerController->GetPawn();
+}
+
+void ATankAIController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+
+	auto* pawnAsTank = Cast<ATank>(InPawn);
+	if (pawnAsTank)
+		pawnAsTank->TankDied.AddDynamic(this, &ATankAIController::TankDied);
+}
+
+void ATankAIController::TankDied()
+{
+	auto* CurrentPawn = GetPawn();
+	if (CurrentPawn)
+		CurrentPawn->DetachFromControllerPendingDestroy();
 }

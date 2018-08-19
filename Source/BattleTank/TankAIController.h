@@ -21,6 +21,11 @@ public:
 
 protected:
 
+	virtual void SetPawn(APawn* InPawn) override;
+
+	UFUNCTION()
+	void TankDied();
+
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	float AcceptanceRadiusForMovementToActor = 3000.f;
 };

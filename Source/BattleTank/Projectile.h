@@ -23,6 +23,8 @@ protected:
 	UFUNCTION()
 	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
+	UFUNCTION()
+	void End();
 
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	class UStaticMeshComponent* CollisionMesh = nullptr;
@@ -38,4 +40,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	class UProjectileMovementComponent* MovementComp = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	float DestroyDelay = 3.f;
 };

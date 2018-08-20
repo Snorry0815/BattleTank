@@ -93,7 +93,7 @@ bool ATankPlayerController::GetLookVectorHitDirection(const FVector& WorldLocati
 	QueryParams.AddIgnoredActor(PawnTank);
 
 	FCollisionResponseParams ResponseParams;
-	if (World->LineTraceSingleByChannel(OutHit, WorldLocation, RayTraceEnd, ECollisionChannel::ECC_Visibility, QueryParams, ResponseParams))
+	if (World->LineTraceSingleByChannel(OutHit, WorldLocation, RayTraceEnd, ECollisionChannel::ECC_Camera, QueryParams, ResponseParams))
 	{
 		OutHitLocation = OutHit.ImpactPoint;
 	}

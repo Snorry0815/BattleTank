@@ -9,11 +9,11 @@ void ATankAIController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	auto* AiTank = GetPawn();
-	if (!ensure(AiTank))
+	if (!(AiTank))
 		return;
 
 	auto* PlayerActor = GetPlayerActor();
-	if (!ensure(PlayerActor))
+	if (!(PlayerActor))
 		return;
 
 	MoveToActor(PlayerActor, AcceptanceRadiusForMovementToActor);

@@ -1,7 +1,7 @@
 // Copyright none Just a tutorial
 
 #include "SprungWheel.h"
-#include "Components/StaticMeshComponent.h"
+#include "Components/SphereComponent.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 
 
@@ -14,8 +14,9 @@ ASprungWheel::ASprungWheel()
 	Spring = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("Spring"));	
 	SetRootComponent(Spring);
 
-	Wheel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wheel"));
-	Wheel->SetupAttachment(Spring);
+	Spring->SetLinearXLimit(ELinearConstraintMotion::LCM_Locked, 0.f);
+	Spring->SetLinearYLimit(ELinearConstraintMotion::LCM_Locked, 0.f);
+	Spring->SetLinearZLimit(ELinearConstraintMotion::LCM_Free, 0.f);
 
 	Spring->SetAngularSwing1Limit(EAngularConstraintMotion::ACM_Locked, 0.f);
 	Spring->SetAngularSwing2Limit(EAngularConstraintMotion::ACM_Locked, 0.f);
@@ -24,6 +25,31 @@ ASprungWheel::ASprungWheel()
 	Spring->SetLinearPositionDrive(false, false, true);
 	Spring->SetLinearVelocityDrive(false, false, true);
 	Spring->SetLinearDriveParams(5000.f, 2000.f, 0.f);
+
+	Axel = CreateDefaultSubobject<USphereComponent>(TEXT("Axel"));
+	Axel->SetupAttachment(Spring);
+	Axel->SetSimulatePhysics(true);
+
+	AxelWheelConstrain = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("AxelWheelConstrain"));
+	AxelWheelConstrain->SetupAttachment(Axel);
+
+	AxelWheelConstrain->SetLinearXLimit(ELinearConstraintMotion::LCM_Locked, 0.f);
+	AxelWheelConstrain->SetLinearYLimit(ELinearConstraintMotion::LCM_Locked, 0.f);
+	AxelWheelConstrain->SetLinearZLimit(ELinearConstraintMotion::LCM_Locked, 0.f);
+
+	AxelWheelConstrain->SetAngularSwing1Limit(EAngularConstraintMotion::ACM_Locked, 0.f);
+	AxelWheelConstrain->SetAngularSwing2Limit(EAngularConstraintMotion::ACM_Locked, 0.f);
+	AxelWheelConstrain->SetAngularTwistLimit(EAngularConstraintMotion::ACM_Free, 0.f);
+
+	Spring->SetLinearPositionDrive(false, false, true);
+	Spring->SetLinearVelocityDrive(false, false, true);
+	Spring->SetLinearDriveParams(5000.f, 2000.f, 0.f);
+
+	Wheel = CreateDefaultSubobject<USphereComponent>(TEXT("Wheel"));
+	Wheel->SetupAttachment(Axel);
+	Wheel->SetSimulatePhysics(true);
+	Wheel->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
 }
 
 
@@ -45,7 +71,8 @@ void ASprungWheel::SetupConstrained()
 	if (!RootAsPrimitive)
 		return;
 
-	Spring->SetConstrainedComponents(RootAsPrimitive, NAME_None, Wheel, NAME_None);
+	Spring->SetConstrainedComponents(RootAsPrimitive, NAME_None, Axel, NAME_None);
+	AxelWheelConstrain->SetConstrainedComponents(Axel, NAME_None, Wheel, NAME_None);
 }
 
 // Called every frame

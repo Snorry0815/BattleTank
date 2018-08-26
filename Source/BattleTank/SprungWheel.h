@@ -28,6 +28,12 @@ protected:
 	class UPhysicsConstraintComponent* Spring = nullptr;
 
 	UPROPERTY(VisibleAnywhere, Category = "Component")
-	class UStaticMeshComponent* Wheel = nullptr;
+	class USphereComponent* Axel = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	class UPhysicsConstraintComponent* AxelWheelConstrain = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	class USphereComponent* Wheel = nullptr;
 
 };

@@ -14,18 +14,8 @@ ASprungWheel::ASprungWheel()
 	Spring = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("Spring"));	
 	SetRootComponent(Spring);
 
-	Mass = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mass"));
-	Mass->SetupAttachment(Spring);
-
-
 	Wheel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wheel"));
 	Wheel->SetupAttachment(Spring);
-
-
-	Spring->SetConstrainedComponents(Mass, NAME_None, Wheel, NAME_None);
-	Spring->SetLinearXLimit(ELinearConstraintMotion::LCM_Locked, 0.f);
-	Spring->SetLinearYLimit(ELinearConstraintMotion::LCM_Locked, 0.f);
-	Spring->SetLinearZLimit(ELinearConstraintMotion::LCM_Free, 0.f);
 
 	Spring->SetAngularSwing1Limit(EAngularConstraintMotion::ACM_Locked, 0.f);
 	Spring->SetAngularSwing2Limit(EAngularConstraintMotion::ACM_Locked, 0.f);
@@ -36,10 +26,26 @@ ASprungWheel::ASprungWheel()
 	Spring->SetLinearDriveParams(5000.f, 2000.f, 0.f);
 }
 
+
 // Called when the game starts or when spawned
 void ASprungWheel::BeginPlay()
 {
 	Super::BeginPlay();
+	SetupConstrained();
+}
+
+void ASprungWheel::SetupConstrained()
+{
+	auto* Parent = GetAttachParentActor();
+
+	if (!Parent)
+		return;
+
+	auto* RootAsPrimitive = Cast<UPrimitiveComponent>(Parent->GetRootComponent());
+	if (!RootAsPrimitive)
+		return;
+
+	Spring->SetConstrainedComponents(RootAsPrimitive, NAME_None, Wheel, NAME_None);
 }
 
 // Called every frame

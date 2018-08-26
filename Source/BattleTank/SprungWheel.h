@@ -14,6 +14,7 @@ class BATTLETANK_API ASprungWheel : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ASprungWheel();
+	void SetupConstrained();
 
 public:
 	// Called every frame
@@ -22,9 +23,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	UPROPERTY(VisibleAnywhere, Category = "Component")
-	class UStaticMeshComponent* Mass = nullptr;
 
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	class UPhysicsConstraintComponent* Spring = nullptr;

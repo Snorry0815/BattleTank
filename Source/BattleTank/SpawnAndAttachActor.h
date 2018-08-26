@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
-#include "SpawnAndAttackActor.generated.h"
+#include "SpawnAndAttachActor.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class BATTLETANK_API USpawnAndAttackActor : public USceneComponent
+class BATTLETANK_API USpawnAndAttachActor : public USceneComponent
 {
 	GENERATED_BODY()
 
 public:	
-	USpawnAndAttackActor();
+	USpawnAndAttachActor();
 
 protected:
 	virtual void BeginPlay() override;

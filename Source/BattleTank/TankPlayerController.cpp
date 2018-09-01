@@ -58,7 +58,10 @@ void ATankPlayerController::SetPawn(APawn* InPawn)
 
 	auto* pawnAsTank = Cast<ATank>(InPawn);
 	if (pawnAsTank)
+	{
+		pawnAsTank->TankDied.RemoveDynamic(this, &ATankPlayerController::TankDied);
 		pawnAsTank->TankDied.AddDynamic(this, &ATankPlayerController::TankDied);
+	}
 }
 
 void ATankPlayerController::TankDied()

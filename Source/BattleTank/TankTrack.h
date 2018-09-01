@@ -16,22 +16,14 @@ class BATTLETANK_API UTankTrack : public UStaticMeshComponent
 public:
 	UTankTrack();
 
-	virtual void BeginPlay() override;
-
 	UFUNCTION(BlueprintCallable)
 	void SetThrottle(float Throttle);
 
 protected:
-
-	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-		FVector NormalImpulse, const FHitResult& Hit);
-	void ApplySidewaysForce();
-	void DriveTrack();
+	void DriveTrack(float CurrentThrottle);
+	TArray<class ASprungWheel*> GetWheels() const;
 
 	// Max force per track, in Newtons 
 	UPROPERTY(EditDefaultsOnly)
 	float TrackMaxDrivingForce = 400000.f;
-
-	float CurrentThrottle = 0.f;
 };

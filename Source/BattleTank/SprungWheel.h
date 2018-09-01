@@ -12,17 +12,21 @@ class BATTLETANK_API ASprungWheel : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ASprungWheel();
 	void SetupConstrained();
 
-public:
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void AddDrivingForce(float ForceMagnitude);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnHit(class UPrimitiveComponent* HitComponent, AActor* OtherActor, class UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	void ApplyDrivingForce();
 
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	class UPhysicsConstraintComponent* Spring = nullptr;
@@ -36,4 +40,5 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	class USphereComponent* Wheel = nullptr;
 
+	float CurrentForceMagnitude;
 };

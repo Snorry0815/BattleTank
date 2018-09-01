@@ -13,7 +13,7 @@ void USpawnAndAttachActor::BeginPlay()
 
 	if (ActorClassToSpawn)
 	{
-		auto* SpawnedActor = GetWorld()->SpawnActorDeferred<AActor>(ActorClassToSpawn, GetComponentTransform(), GetOwner(), nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		SpawnedActor = GetWorld()->SpawnActorDeferred<AActor>(ActorClassToSpawn, GetComponentTransform(), GetOwner(), nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		if (!SpawnedActor)
 			return;
 

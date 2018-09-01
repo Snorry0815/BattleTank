@@ -3,6 +3,7 @@
 #include "SprungWheel.h"
 #include "Components/SphereComponent.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
+#include "Engine/World.h"
 
 
 // Sets default values
@@ -10,6 +11,7 @@ ASprungWheel::ASprungWheel()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.TickGroup = ETickingGroup::TG_PostPhysics;
 
 	Spring = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("Spring"));	
 	SetRootComponent(Spring);
@@ -49,7 +51,7 @@ ASprungWheel::ASprungWheel()
 	Wheel->SetupAttachment(Axel);
 	Wheel->SetSimulatePhysics(true);
 	Wheel->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
+	Wheel->SetNotifyRigidBodyCollision(true);
 }
 
 
@@ -58,6 +60,7 @@ void ASprungWheel::BeginPlay()
 {
 	Super::BeginPlay();
 	SetupConstrained();
+	Wheel->OnComponentHit.AddDynamic(this, &ASprungWheel::OnHit);
 }
 
 void ASprungWheel::SetupConstrained()
@@ -71,6 +74,8 @@ void ASprungWheel::SetupConstrained()
 	if (!RootAsPrimitive)
 		return;
 
+	RootAsPrimitive->IgnoreActorWhenMoving(this, true);
+
 	Spring->SetConstrainedComponents(RootAsPrimitive, NAME_None, Axel, NAME_None);
 	AxelWheelConstrain->SetConstrainedComponents(Axel, NAME_None, Wheel, NAME_None);
 }
@@ -80,5 +85,34 @@ void ASprungWheel::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	CurrentForceMagnitude = 0.f;
 }
 
+void ASprungWheel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (OtherActor && (GetOwner() == OtherActor->GetOwner()))
+		return;
+
+	ApplyDrivingForce();
+}
+
+void ASprungWheel::AddDrivingForce(float ForceMagnitude)
+{
+	if (FMath::Abs(ForceMagnitude) > FMath::Abs(CurrentForceMagnitude))
+		CurrentForceMagnitude = ForceMagnitude;
+}
+
+void ASprungWheel::ApplyDrivingForce()
+{
+	if (!Axel)
+		return;
+
+	if (!Wheel)
+		return;
+
+	auto ForwardVector = Axel->GetForwardVector();
+	Wheel->AddForce(ForwardVector * CurrentForceMagnitude);
+	UE_LOG(LogTemp, Warning, TEXT("ApplyDrivingForce: %f"), CurrentForceMagnitude);
+	CurrentForceMagnitude = 0.f;
+}
